@@ -1,6 +1,6 @@
 # ebook
 
-## Project setup
+## 准备
 ```
 npm install
 ```
