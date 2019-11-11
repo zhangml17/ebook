@@ -1,18 +1,38 @@
 <template>
   <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <span class="icon-bookmark"></span>
+    <span class="text">SJHBKJNL</span>
+    <div id="read"></div>
   </div>
 </template>
 
 <script>
-// @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue'
-
+// import Epub from 'epubjs'
+// global.epub = Epub
+import { mapGetters } from 'vuex'
 export default {
   name: 'home',
-  components: {
-    HelloWorld
+  computed: {
+    ...mapGetters(['test'])
+  },
+  mounted () {
+    this.$store.dispatch('setTest', 19990).then(() => {
+      console.log(this.test)
+    })
   }
 }
 </script>
+
+<style lang="scss" scoped>
+@import "./src/assets/styles/global";
+
+.icon-bookmark {
+  font-size: px2rem(20);
+  color: red;
+}
+.text {
+  font-family: 'Days One';
+  font-size: px2rem(20);
+  color: aqua;
+}
+</style>
