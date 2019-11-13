@@ -5,39 +5,50 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+// import { mapGetters } from 'vuex'
+import { ebookMixin } from '../../utils/mixin'
 import Epub from 'epubjs'
 global.epub = Epub
+
 export default {
-  computed: {
-    ...mapGetters(['fileName'])
-  },
+  mixins: [ ebookMixin ],
   methods:{
       nextPage() {
           if(this.rendition) {
               this.rendition.next()
+              this.hideTitleAndMenu()
           }
       },
       prevPage() {
           if(this.rendition) {
               this.rendition.prev()
+              this.hideTitleAndMenu()
           }
       },
       toggleTitleAndMenu() {
-
+          if(this.menuVisible) {
+            this.setSettingVisible(-1)
+          }
+          this.setMenuVisible(!this.menuVisible)
       },
+      hideTitleAndMenu() {
+        this.setMenuVisible(false)
+        this.setSettingVisible(-1)
+      },
+
     initEpub () {
         // const url = 'http://localhost:8081/' + this.fileName + '.txt'
         const url = '2018_Book_AgileProcessesInSoftwareEngine.epub'
-        // console.log(url)
         this.book = new Epub(url)
-        console.log(this.book )
+        this.setCurrentBook(this.book)
+        
         this.rendition = this.book.renderTo('read', {
             width: innerWidth,
             height: innerHeight,
             // method: 'default'
         })
         this.rendition.display()
+        // 绑定事件到iframe上
         this.rendition.on('touchstart', event => {
             // console.log(event)
             this.touchStartX = event.changedTouches[0].clientX
@@ -53,14 +64,14 @@ export default {
             }else {
                 this.toggleTitleAndMenu  ()
             }
-            event.preventDefault()
+            // event.preventDefault()
             event.stopPropagation()
         })
     }
   },
   mounted () {
     const fileName = this.$route.params.fileName.split('|').join('/')
-    this.$store.dispatch('setFileName', fileName).then(()=>{
+    this.setFileName(fileName).then(()=>{
         this.initEpub()
     })
   }
@@ -68,4 +79,5 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import '../../assets/styles/global'
 </style>

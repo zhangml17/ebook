@@ -1,17 +1,26 @@
 const book = {
   state: {
-    fileName: ''
+    fileName: '',
+    menuVisible: false,
+    settingVisible: -1,  // -1 不显示 0 显示字体 1 主题 2 进度 3 目录
+    defaultFontSize: 16,
+    currentBook: null
   },
   mutations: {
     'SET_FILENAME': (state, fileName) => {
       state.fileName = fileName
-    }
-  },
-  actions: {
-    setFileName: ({ commit, state }, fileName) => {
-      // console.log(state.test, newTest)
-      // 返回的是一个promise对象
-      return commit('SET_FILENAME', fileName)
+    },
+    'SET_MENUVISIBLE': (state, menuVisible) => {
+      state.menuVisible = menuVisible
+    },
+    'SET_SETTINGVISIBLE': (state, settingVisible) => {
+      state.settingVisible = settingVisible
+    },
+    'SET_DEFAULTFONTSIZE': (state, defaultFontSize) => {
+      state.defaultFontSize = defaultFontSize
+    },
+    'SET_CURRENTBOOK': (state, currentBook) => {
+      state.currentBook = currentBook
     }
   }
 }
