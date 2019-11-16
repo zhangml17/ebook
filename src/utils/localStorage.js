@@ -36,10 +36,19 @@ export function getBookObject(fileName, key) {
     }
 }
 
+// 缓存字体
 export function getFontFamily(fileName) {
      return getBookObject(fileName, 'fontFamily')
 }
 
 export function saveFontFamily(fileName, font) {
     setBookObject(fileName, 'fontFamily', font)
+}
+
+// 缓存字号
+export function getFontSize(fileName) {
+    return getBookObject(fileName, 'fontSize')
+}
+export function saveFontSize(fileName, size) {
+    setBookObject(fileName, 'fontSize', size)
 }

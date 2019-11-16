@@ -6,7 +6,7 @@
 
 <script>
 // import { mapGetters } from 'vuex'
-import { getFontFamily, saveFontFamily } from '../../utils/localStorage'
+import { getFontFamily, saveFontFamily, getFontSize, saveFontSize} from '../../utils/localStorage'
 import { ebookMixin } from '../../utils/mixin'
 import Epub from 'epubjs'
 global.epub = Epub
@@ -14,30 +14,50 @@ global.epub = Epub
 export default {
   mixins: [ ebookMixin ],
   methods:{
-      nextPage() {
-          if(this.rendition) {
-              this.rendition.next()
-              this.hideTitleAndMenu()
-          }
-      },
-      prevPage() {
-          if(this.rendition) {
-              this.rendition.prev()
-              this.hideTitleAndMenu()
-          }
-      },
-      toggleTitleAndMenu() {
-          if(this.menuVisible) {
-            this.setSettingVisible(-1)
-             this.setFontFamilyVisible(false)
-          }
-          this.setMenuVisible(!this.menuVisible)
-      },
-      hideTitleAndMenu() {
-        this.setMenuVisible(false)
+    nextPage() {
+        if(this.rendition) {
+            this.rendition.next()
+            this.hideTitleAndMenu()
+        }
+    },
+    prevPage() {
+        if(this.rendition) {
+            this.rendition.prev()
+            this.hideTitleAndMenu()
+        }
+    },
+    toggleTitleAndMenu() {
+        if(this.menuVisible) {
         this.setSettingVisible(-1)
-        this.setFontFamilyVisible(false)
-      },
+            this.setFontFamilyVisible(false)
+        }
+        this.setMenuVisible(!this.menuVisible)
+    },
+    hideTitleAndMenu() {
+    this.setMenuVisible(false)
+    this.setSettingVisible(-1)
+    this.setFontFamilyVisible(false)
+    },
+    initFontSize() {
+        let fontSize = getFontSize(this.fileName)
+        if(!fontSize) {
+            saveFontSize(this.fileName, this.defaultFontSize)
+        }else{
+            this.rendition.themes.fontSize(fontSize)
+            this.setDefaultFontSize(fontSize)
+        }
+    },
+    initFontFamily() {
+        let font = getFontFamily(this.fileName)
+        if(!font) {
+            // 如果从localStorage中未获取到字体，即未设置字体，则设置为默认字体
+            saveFontFamily(this.fileName, this.defaultFontFamily)
+        }else{
+            // 如果已经设置了字体，则电子书设置为该字体
+            this.rendition.themes.font(font)
+            this.setDefaultFontFamily(font)
+        }
+    },
 
     initEpub () {
         const url = 'http://localhost:8081/epub/' + this.fileName + '.epub'
@@ -51,15 +71,8 @@ export default {
             // method: 'default'
         })
         this.rendition.display().then(()=>{
-            let font = getFontFamily(this.fileName)
-            if(!font) {
-                // 如果从localStorage中未获取到字体，即未设置字体，则设置为默认字体
-                saveFontFamily(this.fileName, this.defaultFontFamily)
-            }else{
-                // 如果已经设置了字体，则电子书设置为该字体
-                this.rendition.themes.font(font)
-                this.setDefaultFontFamily(font)
-            }
+            this.initFontSize()
+            this.initFontFamily()
         })
         // 绑定事件到iframe上
         this.rendition.on('touchstart', event => {
