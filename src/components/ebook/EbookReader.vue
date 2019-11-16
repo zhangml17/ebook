@@ -6,6 +6,7 @@
 
 <script>
 // import { mapGetters } from 'vuex'
+import { getFontFamily, saveFontFamily } from '../../utils/localStorage'
 import { ebookMixin } from '../../utils/mixin'
 import Epub from 'epubjs'
 global.epub = Epub
@@ -49,7 +50,17 @@ export default {
             height: innerHeight,
             // method: 'default'
         })
-        this.rendition.display()
+        this.rendition.display().then(()=>{
+            let font = getFontFamily(this.fileName)
+            if(!font) {
+                // 如果从localStorage中未获取到字体，即未设置字体，则设置为默认字体
+                saveFontFamily(this.fileName, this.defaultFontFamily)
+            }else{
+                // 如果已经设置了字体，则电子书设置为该字体
+                this.rendition.themes.font(font)
+                this.setDefaultFontFamily(font)
+            }
+        })
         // 绑定事件到iframe上
         this.rendition.on('touchstart', event => {
             // console.log(event)
