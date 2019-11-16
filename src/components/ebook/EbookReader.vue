@@ -28,17 +28,19 @@ export default {
       toggleTitleAndMenu() {
           if(this.menuVisible) {
             this.setSettingVisible(-1)
+             this.setFontFamilyVisible(false)
           }
           this.setMenuVisible(!this.menuVisible)
       },
       hideTitleAndMenu() {
         this.setMenuVisible(false)
         this.setSettingVisible(-1)
+        this.setFontFamilyVisible(false)
       },
 
     initEpub () {
-        // const url = 'http://localhost:8081/' + this.fileName + '.txt'
-        const url = '2018_Book_AgileProcessesInSoftwareEngine.epub'
+        const url = 'http://localhost:8081/epub/' + this.fileName + '.epub'
+        // const url = '2018_Book_AgileProcessesInSoftwareEngine.epub'
         this.book = new Epub(url)
         this.setCurrentBook(this.book)
         
@@ -66,6 +68,14 @@ export default {
             }
             // event.preventDefault()
             event.stopPropagation()
+        })
+        this.rendition.hooks.content.register(contents=>{
+            Promise.all([
+                contents.addStylesheet(`${process.env.VUE_APP_RES_URL}/fonts/cabin.css`),
+                contents.addStylesheet(`${process.env.VUE_APP_RES_URL}/fonts/daysOne.css`),
+                contents.addStylesheet(`${process.env.VUE_APP_RES_URL}/fonts/montserrat.css`),
+                contents.addStylesheet(`${process.env.VUE_APP_RES_URL}/fonts/tangerine.css`),
+            ]).then(()=>{})
         })
     }
   },
