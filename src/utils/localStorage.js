@@ -52,3 +52,11 @@ export function getFontSize(fileName) {
 export function saveFontSize(fileName, size) {
     setBookObject(fileName, 'fontSize', size)
 }
+
+// 缓存国际化语言(全局配置 ))
+export function getLocale() {
+    return getLocalStorage('locale')
+}
+export function saveLocale(locale) {
+    setLocalStorage('locale', locale)
+}
