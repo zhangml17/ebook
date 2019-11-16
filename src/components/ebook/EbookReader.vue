@@ -6,7 +6,8 @@
 
 <script>
 // import { mapGetters } from 'vuex'
-import { getFontFamily, saveFontFamily, getFontSize, saveFontSize} from '../../utils/localStorage'
+import { getFontFamily, saveFontFamily, getFontSize, saveFontSize,
+        getTheme, saveTheme, } from '../../utils/localStorage'
 import { ebookMixin } from '../../utils/mixin'
 import Epub from 'epubjs'
 global.epub = Epub
@@ -58,7 +59,21 @@ export default {
             this.setDefaultFontFamily(font)
         }
     },
-
+    initTheme() {
+        // 将主题存入缓存
+        let currentTheme = getTheme(this.fileName)
+        if(!currentTheme) {
+            currentTheme = this.themeList[0].name
+            this.setDefaultTheme(currentTheme)
+            saveTheme(this.fileName, currentTheme)
+        }
+        // 注册主题
+        this.themeList.forEach((theme)=>{
+            this.rendition.themes.register(theme.name, theme.style)
+        })
+        // 选择默认主题
+        this.rendition.themes.select(currentTheme) 
+    },
     initEpub () {
         const url = 'http://localhost:8081/epub/' + this.fileName + '.epub'
         // const url = '2018_Book_AgileProcessesInSoftwareEngine.epub'
@@ -73,6 +88,7 @@ export default {
         this.rendition.display().then(()=>{
             this.initFontSize()
             this.initFontFamily()
+            this.initTheme()
         })
         // 绑定事件到iframe上
         this.rendition.on('touchstart', event => {
