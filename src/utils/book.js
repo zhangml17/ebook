@@ -64,3 +64,29 @@
     },
    ]
  }
+
+ export function addCSS(href) {
+   let link = document.createElement('link')
+   link.setAttribute('rel', 'stylesheet')
+   link.setAttribute('type', 'text/css')
+   link.setAttribute('href', href)
+   document.getElementsByTagName('head')[0].append(link)
+ }
+// 因为 addCSS是通过append添加link标签，所以会一直添加，因此会重复，需要清除重复
+ export function removeCSS(href) {
+   let links = document.getElementsByTagName('link')
+   for(let i=links.length;i>=0;i--) {
+     const link = links[i]
+     if(link && link.getAttribute('href') && link.getAttribute('href') === href) {
+       link.parentNode.removeChild(link)
+     }
+   }
+ }
+
+ export function removeAllCSS() {
+   removeCSS(`${process.env.VUE_APP_RES_URL}/theme/theme_default.css`)
+   removeCSS(`${process.env.VUE_APP_RES_URL}/theme/theme_eye.css`)
+   removeCSS(`${process.env.VUE_APP_RES_URL}/theme/theme_gold.css`)
+   removeCSS(`${process.env.VUE_APP_RES_URL}/theme/theme_night.css`)
+
+ }

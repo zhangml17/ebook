@@ -9,6 +9,7 @@
 import { getFontFamily, saveFontFamily, getFontSize, saveFontSize,
         getTheme, saveTheme, } from '../../utils/localStorage'
 import { ebookMixin } from '../../utils/mixin'
+
 import Epub from 'epubjs'
 global.epub = Epub
 
@@ -64,19 +65,18 @@ export default {
         let currentTheme = getTheme(this.fileName)
         if(!currentTheme) {
             currentTheme = this.themeList[0].name
-            this.setDefaultTheme(currentTheme)
             saveTheme(this.fileName, currentTheme)
         }
         // 注册主题
         this.themeList.forEach((theme)=>{
             this.rendition.themes.register(theme.name, theme.style)
         })
+        this.setDefaultTheme(currentTheme)
         // 选择默认主题
         this.rendition.themes.select(currentTheme) 
     },
     initEpub () {
-        const url = 'http://localhost:8081/epub/' + this.fileName + '.epub'
-        // const url = '2018_Book_AgileProcessesInSoftwareEngine.epub'
+        const url = `${process.env.VUE_APP_RES_URL}/epub/` + this.fileName + '.epub'
         this.book = new Epub(url)
         this.setCurrentBook(this.book)
         
@@ -89,6 +89,7 @@ export default {
             this.initFontSize()
             this.initFontFamily()
             this.initTheme()
+            this.initGlobalTheme()
         })
         // 绑定事件到iframe上
         this.rendition.on('touchstart', event => {

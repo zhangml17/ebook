@@ -24,6 +24,7 @@ export default {
              const theme = this.themeList[index]
              this.setDefaultTheme(theme.name).then(()=>{
                  this.currentBook.rendition.themes.select(this.defaultTheme)
+                 this.initGlobalTheme()
              })
             saveTheme(this.fileName, theme.name)
         }
