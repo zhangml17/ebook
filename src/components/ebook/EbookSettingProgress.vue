@@ -32,6 +32,7 @@
 
 <script>
 import { ebookMixin } from '../../utils/mixin'
+import { saveLocation } from '../../utils/localStorage'
 
 export default {
     mixins: [ ebookMixin ],
@@ -62,13 +63,19 @@ export default {
       displayProgress(){
         // 通过进度百分比获取cfi
         const cfi = this.currentBook.locations.cfiFromPercentage(this.progress / 100)
-        this.currentBook.rendition.display(cfi)
+        this.display(cfi, ()=>{
+          this.refreshLocation()
+        })
+        // this.currentBook.rendition.display(cfi).then(()=>{
+        //   this.refreshLocation()
+        // })
       },
       updateProgressBg(){
         // 进度条右边的部分样式
         this.$refs.progress.style.cssText += `background-size: ${this.progress}% 100% !important;`
       },
       prevSection(){
+        console.log(this.section)
         if(this.section > 0 && this.bookAvailable) {
           this.setSection(this.section -1 ).then(()=>{
             this.displaySection()
@@ -86,7 +93,12 @@ export default {
       displaySection() {
         const sectionInfo = this.currentBook.section(this.section)
         if(sectionInfo && sectionInfo.href) {
-          this.currentBook.rendition.display(sectionInfo.href)
+          this.display(sectionInfo.href, ()=>{
+            this.refreshLocation()
+          })
+          // this.currentBook.rendition.display(sectionInfo.href).then(()=>{
+          //   this.refreshLocation()
+          // })
         }
       }
     },

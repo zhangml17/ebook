@@ -7,7 +7,7 @@
 <script>
 // import { mapGetters } from 'vuex'
 import { getFontFamily, saveFontFamily, getFontSize, saveFontSize,
-        getTheme, saveTheme, } from '../../utils/localStorage'
+        getTheme, saveTheme, getLocation } from '../../utils/localStorage'
 import { ebookMixin } from '../../utils/mixin'
 
 import Epub from 'epubjs'
@@ -18,13 +18,17 @@ export default {
   methods:{
     nextPage() {
         if(this.rendition) {
-            this.rendition.next()
+            this.rendition.next().then(()=>{
+                this.refreshLocation()
+            })
             this.hideTitleAndMenu()
         }
     },
     prevPage() {
         if(this.rendition) {
-            this.rendition.prev()
+            this.rendition.prev().then(()=>{
+                this.refreshLocation()
+            })
             this.hideTitleAndMenu()
         }
     },
@@ -81,11 +85,13 @@ export default {
             height: innerHeight,
             // method: 'default'
         })
-        this.rendition.display().then(()=>{
+        const location = getLocation(this.fileName) 
+        this.display(location, ()=>{
             this.initFontSize()
             this.initFontFamily()
             this.initTheme()
             this.initGlobalTheme()
+            this.refreshLocation()
         })
         this.rendition.hooks.content.register(contents=>{
             Promise.all([
@@ -128,7 +134,8 @@ export default {
             // 默认屏幕宽375 字体大小为16
             return this.book.locations.generate(750 * (window.innerWidth / 375) 
             * (getFontSize(this.fileName) / 16)).then((locations)=>{
-                this.setBookAvailable(true)
+                this.setBookAvailable(true) 
+                this.refreshLocation() 
             })
         })
 
