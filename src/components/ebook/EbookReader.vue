@@ -75,11 +75,7 @@ export default {
         // 选择默认主题
         this.rendition.themes.select(currentTheme) 
     },
-    initEpub () {
-        const url = `${process.env.VUE_APP_RES_URL}/epub/` + this.fileName + '.epub'
-        this.book = new Epub(url)
-        this.setCurrentBook(this.book)
-        
+    initRedition() {
         this.rendition = this.book.renderTo('read', {
             width: innerWidth,
             height: innerHeight,
@@ -91,7 +87,17 @@ export default {
             this.initTheme()
             this.initGlobalTheme()
         })
-        // 绑定事件到iframe上
+        this.rendition.hooks.content.register(contents=>{
+            Promise.all([
+                contents.addStylesheet(`${process.env.VUE_APP_RES_URL}/fonts/cabin.css`),
+                contents.addStylesheet(`${process.env.VUE_APP_RES_URL}/fonts/daysOne.css`),
+                contents.addStylesheet(`${process.env.VUE_APP_RES_URL}/fonts/montserrat.css`),
+                contents.addStylesheet(`${process.env.VUE_APP_RES_URL}/fonts/tangerine.css`),
+            ]).then(()=>{})
+        })
+    },
+    initGesture(){
+        // 绑定手势事件到iframe上
         this.rendition.on('touchstart', event => {
             // console.log(event)
             this.touchStartX = event.changedTouches[0].clientX
@@ -110,14 +116,22 @@ export default {
             // event.preventDefault()
             event.stopPropagation()
         })
-        this.rendition.hooks.content.register(contents=>{
-            Promise.all([
-                contents.addStylesheet(`${process.env.VUE_APP_RES_URL}/fonts/cabin.css`),
-                contents.addStylesheet(`${process.env.VUE_APP_RES_URL}/fonts/daysOne.css`),
-                contents.addStylesheet(`${process.env.VUE_APP_RES_URL}/fonts/montserrat.css`),
-                contents.addStylesheet(`${process.env.VUE_APP_RES_URL}/fonts/tangerine.css`),
-            ]).then(()=>{})
+    },
+    initEpub () {
+        const url = `${process.env.VUE_APP_RES_URL}/epub/` + this.fileName + '.epub'
+        this.book = new Epub(url)
+        this.setCurrentBook(this.book)
+        this.initRedition()
+        this.initGesture()
+        this.book.ready.then(()=>{
+            // generate方法参数为每页上的文字数
+            // 默认屏幕宽375 字体大小为16
+            return this.book.locations.generate(750 * (window.innerWidth / 375) 
+            * (getFontSize(this.fileName) / 16)).then((locations)=>{
+                this.setBookAvailable(true)
+            })
         })
+
     }
   },
   mounted () {
