@@ -12,6 +12,23 @@
             <div class="slide-contents-search-cancel" v-if="searchVisible"
                 @click="hideSeachPage()">{{$t('book.cancel')}}</div>
         </div>
+
+        <div class="slide-contents-book-wrapper">
+            <div class="slide-contents-book-img-wrapper">
+                <img :src="cover" class="slide-contents-book-img" />
+            </div>
+            <div class="slide-contents-book-info-wrapper">
+                    <div class="slide-contents-book-title">{{ metadata.title }}</div>
+                    <div class="slide-contents-book-author">{{ metadata.creator }}</div>
+            </div>
+            <div class="slide-contents-book-progress-wrapper">
+                <div class="slide-contents-book-progress">
+                    <span class="progress">{{ progress + '%'}}</span>
+                    <span class="progress-text">{{$t('book.haveRead2')}}</span>
+                </div>
+                <div class="slide-contents-book-time">{{ getReadTimeText() }}</div>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -40,11 +57,12 @@ export default {
 @import '../../assets/styles/global';
 .ebook-slide-contents{
     width: 100%;
+    font-size: 0;
     .slide-contents-search-wrapper{
         display: flex;
         width:100%;
         height: px2rem(36);
-        margin: px2rem(20) 0 px2rem(10) 10;
+        margin: px2rem(20) 0 px2rem(10);
         padding: 0 px2rem(15);
         box-sizing: border-box;
         .slide-contents-search-input-wrapper{
@@ -73,6 +91,54 @@ export default {
             @include right;
         }
     }
+    .slide-contents-book-wrapper{
+        display: flex;
+        width: 100%;
+        height: px2rem(90);
+        padding: px2rem(10) px2rem(15) px2rem(20) px2rem(15);
+        box-sizing: border-box;
+        .slide-contents-book-img-wrapper{
+            flex: 0 0 px2rem(45);
+            .slide-contents-book-img{
+                width: px2rem(45);
+                height: px2rem(60);
+            }
+        }
+        .slide-contents-book-info-wrapper{
+            flex: 1;
+            padding: 0 px2rem(10);
+            box-sizing: border-box;
+            .slide-contents-book-title{
+                // 375*0.85-15*2 - 10*2 - 45 - 70 = 153.75
+                width:px2rem(153.75);
+                font-size: px2rem(14);
+                line-height: px2rem(16);
+                @include ellipsis2(2);
+            }
+            .slide-contents-book-author{
+                width:px2rem(153.75);
+                font-size: px2rem(12); 
+                margin-top: px2rem(5);
+                padding-bottom: px2rem(10);  
+                @include ellipsis;
+            }
+        }
+        .slide-contents-book-progress-wrapper{
+            flex: 0 0 px2rem(70);
+            .slide-contents-book-progress{
+                .progress{
+                    font-size: px2rem(14);
+                }
+                .progress-text{
+                    font-size: px2rem(12 );
+                }
+            }
+            .slide-contents-book-time{
+                margin-top: px2rem(5);  
+                font-size: px2rem(12);
+            }
+        }
+     }
 }
 
 </style>

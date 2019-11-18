@@ -38,7 +38,7 @@ export default {
             this.setFontFamilyVisible(false)
         }
         this.setMenuVisible(!this.menuVisible)
-    },
+    }, 
     initFontSize() {
         let fontSize = getFontSize(this.fileName)
         if(!fontSize) {
@@ -74,6 +74,19 @@ export default {
         // 选择默认主题
         this.rendition.themes.select(currentTheme) 
     },
+    parseBook() {
+        // 获取封面图片链接
+        this.book.loaded.cover.then(cover=>{
+            this.book.archive.createUrl(cover).then(url=>{
+                this.setCover(url)
+            })
+        })
+        // 获取作者和书名的元信息
+        this.book.loaded.metadata.then(metadata=>{
+            this.setMetadata(metadata)
+            console.log(metadata )
+        })
+    },
     initRedition() {
         this.rendition = this.book.renderTo('read', {
             width: innerWidth,
@@ -87,6 +100,7 @@ export default {
             this.initTheme()
             this.initGlobalTheme()
             this.refreshLocation()
+            this.parseBook()
         })
         this.rendition.hooks.content.register(contents=>{
             Promise.all([

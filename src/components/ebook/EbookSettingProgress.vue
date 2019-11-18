@@ -40,7 +40,7 @@ export default {
       getSectionName() {
         if(this.section) {
           const sectionInfo = this.currentBook.section(this.section)
-          if(sectionInfo && sectionInfo.href) {
+          if(sectionInfo && sectionInfo.href && this.currentBook && this.currentBook.navigation) {
             return this.currentBook.navigation.get(sectionInfo.href).label
           }
         }
@@ -94,18 +94,8 @@ export default {
             this.refreshLocation()
           })
         }
-      },
-      getReadTimeText() {
-        return this.$t('book.haveRead').replace('$1', this.getReadTimeByMinute())
-      },
-      getReadTimeByMinute() {
-        let readTime = getReadTime(this.fileName)
-        if(!readTime) {
-          return 0
-        }else {
-          return Math.ceil(readTime / 60)
-        }
       }
+
     },
     updated(){
       this.updateProgressBg()
