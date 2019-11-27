@@ -56,7 +56,7 @@ export default {
                 const lineWidth = this.lineWidth[index]
 
                 if(index === 0) {
-                    // mask增加
+                    // mask增加(最大为16，到16就不执行+或-了，除非this.add改变)
                     if(this.add && maskWidth.value < 16) {
                         maskWidth.value ++
                         lineWidth.value --   
@@ -97,10 +97,12 @@ export default {
 
                 if(index === this.maskWidth.length-1){
                     if(this.add) {
+                        // 当line最小时
                         if(maskWidth.value === 16) {
                             this.end = true
                         }
                     }else{
+                        // 当line最大时
                         if(maskWidth.value === 0){
                             this.end = true
                         }
@@ -112,7 +114,7 @@ export default {
                     this.end = false
                 }
             })
-        }, 20)
+        }, 500)
     }
 }
 </script>
