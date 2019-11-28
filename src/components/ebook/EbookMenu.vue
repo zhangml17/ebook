@@ -69,7 +69,7 @@ export default {
 
     // box-shadow: 水平方向 垂直方向  ...  阴影程度15%
     box-shadow: 0 px2rem(-8) px2rem(8) rgba(0, 0, 0, .15);
-    z-index:101;
+    z-index:200;
     .icon-wrapper{
       flex:1;
       @include center;

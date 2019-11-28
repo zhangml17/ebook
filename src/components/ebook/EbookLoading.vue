@@ -114,7 +114,7 @@ export default {
                     this.end = false
                 }
             })
-        }, 500)
+        }, 20)
     }
 }
 </script>
@@ -128,6 +128,7 @@ export default {
     height: px2rem(40);
     border: px2rem(1.5) solid #d7d7d7;
     border-radius: px2rem(3);
+    z-index: 500;
     .ebook-loading-wrapper{
         display: flex;
         width: 100%;
